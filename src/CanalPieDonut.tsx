@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 // Donut 3D — anel com furo (total no centro), fatias extrudadas pra baixo
 // (paredes escurecidas), topo glossy, raio E altura proporcionais ao valor
@@ -26,6 +26,9 @@ export interface CanalPieDonutProps {
 
 export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
   const [fatiaAtiva, setFatiaAtiva] = useState<string | null>(null);
+  // sufixo único: evita colisão de id se o componente renderizar mais de uma
+  // vez na mesma página (gradiente/filtro em <defs> são globais ao document).
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const W = 340, H = 210, cx = W / 2, cy = 96, ky = 0.8;
   const RI = 40, RO_MIN = 58, RO_MAX = 74, H_MIN = 8, H_MAX = 16, GAP = 2;
 
@@ -61,6 +64,10 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
   const ordenadas = [...fatias].sort((x, y) => Math.sin((x.mid * Math.PI) / 180) - Math.sin((y.mid * Math.PI) / 180));
   const anel = (f: typeof fatias[0], dy: number) => caminho([...arco(f.a0, f.a1, f.ro, dy), ...arco(f.a1, f.a0, RI, dy)]);
   const fmtVal = (v: number) => v >= 1000 ? `R$ ${(v / 1000).toFixed(1).replace('.', ',')}k` : `R$ ${Math.round(v)}`;
+  // % sobre o total REAL (não o ajustado com piso mínimo) — canal zerado mostra 0%.
+  const pctReal = (v: number) => Math.round((v / somaReal) * 100);
+  // as duas maiores fatias ganham um glow ambiente suave atrás do anel.
+  const maioresValores = [...dados].sort((a, b) => b.value - a.value).slice(0, 2).map(d => d.name);
 
   return (
     // wrap preenche 100% do espaço que o pai (flex-1) reservar — útil quando o
@@ -72,12 +79,21 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
     <div className="relative flex-1 w-full h-full min-h-[160px] flex items-center justify-center animate-in fade-in zoom-in-90 duration-700">
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="w-full h-full max-w-[420px] max-h-[260px]">
         <defs>
-          <linearGradient id="canalGlossDonut" x1="0" y1="0" x2="0.6" y2="1">
+          <linearGradient id={`canalGlossDonut-${uid}`} x1="0" y1="0" x2="0.6" y2="1">
             <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} />
             <stop offset="45%" stopColor="#ffffff" stopOpacity={0.12} />
             <stop offset="100%" stopColor="#000000" stopOpacity={0.1} />
           </linearGradient>
+          <filter id={`canalGlowDonut-${uid}`} x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="10" />
+          </filter>
         </defs>
+        {/* glow ambiente suave atrás das duas maiores fatias — dá profundidade
+            sem competir com os rótulos (fica atrás de tudo, opacidade baixa) */}
+        {fatias.filter(f => maioresValores.includes(f.name)).map(f => {
+          const [gx, gy] = pt(f.mid, RO_MIN * 0.55);
+          return <circle key={`glow-${f.name}`} cx={gx} cy={gy} r={26} fill={f.color} opacity={0.22} filter={`url(#canalGlowDonut-${uid})`} />;
+        })}
         {ordenadas.map(f => {
           const base = anel(f, f.h);
           const i0 = f.a0, i1 = Math.min(f.a1, 0);
@@ -105,7 +121,7 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
                 return (<g key={i}><path d={corte} fill={f.color} /><path d={corte} fill="#000" opacity={0.4} /></g>);
               })}
               <path d={topo} fill={f.color} />
-              <path d={topo} fill="url(#canalGlossDonut)" />
+              <path d={topo} fill={`url(#canalGlossDonut-${uid})`} />
             </g>
           );
         })}
@@ -155,8 +171,9 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
                 style={{ transform: ativa ? 'translate(0, -6px)' : 'translate(0, 0)', transition: 'transform 0.2s ease', cursor: 'pointer' }}>
                 <polyline points={pontos} fill="none" stroke="transparent" strokeWidth={10} />
                 <polyline points={pontos} fill="none" stroke={f.color} strokeWidth={1} opacity={0.85} />
-                <text x={tx} y={ly - 3} textAnchor={dir ? 'start' : 'end'} fontSize={11} fill="var(--muted-foreground)">{f.name}</text>
-                <text x={tx} y={ly + 11} textAnchor={dir ? 'start' : 'end'} fontSize={11} fontWeight={600} fill={f.color}>{fmtVal(f.value)}</text>
+                <circle cx={colX + (dir ? 3 : -3)} cy={ly} r={2.5} fill={f.color} />
+                <text x={tx} y={ly - 3} textAnchor={dir ? 'start' : 'end'} fontSize={12} fontWeight={600} fill="var(--muted-foreground)">{f.name}</text>
+                <text x={tx} y={ly + 12} textAnchor={dir ? 'start' : 'end'} fontSize={11.5} fontWeight={700} fill={f.color}>{fmtVal(f.value)} · {pctReal(f.value)}%</text>
               </g>
             );
           });
