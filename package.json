@@ -1,5 +1,5 @@
 {
-  "name": "gr-ui-charts",
+  "name": "svg-donut-charts",
   "version": "0.1.0",
   "description": "Gráficos SVG customizados (donut 3D) sem dependência de libs de chart",
   "type": "module",

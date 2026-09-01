@@ -1,4 +1,4 @@
-# gr-ui-charts
+# svg-donut-charts
 
 Gráficos SVG customizados, desenhados na mão em React — sem dependência de
 libs de chart (Recharts, etc.), porque nenhuma delas suporta raio/altura
@@ -32,7 +32,7 @@ variável por fatia num pie/donut.
 ## Uso
 
 ```tsx
-import { CanalPie, type CanalPieDado } from 'gr-ui-charts';
+import { CanalPie, type CanalPieDado } from 'svg-donut-charts';
 
 const dados: CanalPieDado[] = [
   { name: 'Categoria A', value: 10566.55, color: 'var(--chart-purple)' },
@@ -53,16 +53,16 @@ const dados: CanalPieDado[] = [
   o plugin, o componente funciona normalmente, só sem essa animação.
 - **Tailwind v4 `@source`**: se instalado via dependência git (código-fonte
   puro, sem build), adicione uma entrada `@source` apontando para
-  `node_modules/gr-ui-charts/src` no seu `tailwind.css`, senão as classes
+  `node_modules/svg-donut-charts/src` no seu `tailwind.css`, senão as classes
   usadas só dentro deste pacote são podadas do CSS final:
   ```css
-  @source '../../node_modules/gr-ui-charts/src/**/*.tsx';
+  @source '../../node_modules/svg-donut-charts/src/**/*.tsx';
   ```
 
 ## Instalação (dependência git, sem publicação no npm)
 
 ```bash
-npm install git+https://github.com/01010100hiago/gr-ui-charts.git
+npm install git+https://github.com/01010100hiago/svg-donut-charts.git
 ```
 
 Distribuído como TSX fonte puro (sem etapa de build) — o bundler do projeto
