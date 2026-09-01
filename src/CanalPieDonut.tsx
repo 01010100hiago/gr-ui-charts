@@ -29,7 +29,10 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
   // sufixo único: evita colisão de id se o componente renderizar mais de uma
   // vez na mesma página (gradiente/filtro em <defs> são globais ao document).
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
-  const W = 340, H = 210, cx = W / 2, cy = 96, ky = 0.8;
+  // W com folga lateral: os rótulos (nome + "R$ X · N%") ficam FORA do anel e
+  // o SVG corta o que passa do viewBox — com 340 de largura, nomes longos como
+  // "Mercado Livre" eram truncados na borda.
+  const W = 400, H = 210, cx = W / 2, cy = 96, ky = 0.8;
   const RI = 40, RO_MIN = 58, RO_MAX = 74, H_MIN = 8, H_MAX = 16, GAP = 2;
 
   // Todo canal marca presença: quem está zerado/minúsculo ganha uma fatia
