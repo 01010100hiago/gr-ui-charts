@@ -78,22 +78,11 @@ export function CanalPieDonut({ dados, totalLabel }: CanalPieDonutProps) {
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="w-full h-full max-w-[420px] max-h-[260px]">
         <defs>
           <linearGradient id={`canalGlossDonut-${uid}`} x1="0" y1="0" x2="0.6" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity={0.65} />
-            <stop offset="40%" stopColor="#ffffff" stopOpacity={0.18} />
-            <stop offset="100%" stopColor="#000000" stopOpacity={0.12} />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity={0.55} />
+            <stop offset="45%" stopColor="#ffffff" stopOpacity={0.12} />
+            <stop offset="100%" stopColor="#000000" stopOpacity={0.1} />
           </linearGradient>
-          <filter id={`canalGlowDonut-${uid}`} x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="15" />
-          </filter>
         </defs>
-        {/* auréola colorida atrás de CADA fatia — proporcional ao tamanho dela
-            (fatia grande = glow maior/mais visível), fica atrás de tudo com
-            opacidade baixa pra não competir com os rótulos. */}
-        {fatias.map(f => {
-          const [gx, gy] = pt(f.mid, RO_MIN * 0.55);
-          const raio = 20 + (f.ro / RO_MAX) * 26;
-          return <circle key={`glow-${f.name}`} cx={gx} cy={gy} r={raio} fill={f.color} opacity={0.38} filter={`url(#canalGlowDonut-${uid})`} />;
-        })}
         {ordenadas.map(f => {
           const base = anel(f, f.h);
           const i0 = f.a0, i1 = Math.min(f.a1, 0);
