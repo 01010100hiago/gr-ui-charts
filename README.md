@@ -22,10 +22,11 @@ variável por fatia num pie/donut.
 - **`CanalPieDonut`** (também exportado como `CanalPie`) — versão atual,
   recomendada. Donut 3D com raio e altura proporcionais ao valor de cada
   fatia, hover que levanta a fatia, rótulos externos roteados em leque (nunca
-  cruzam o pie nem se sobrepõem — repare como "Categoria C" e "Categoria D"
-  não colidem, ao contrário da variante Basic ao lado), fatia mínima para
-  categorias zeradas, e texto central que encolhe sozinho conforme o valor
-  cresce.
+  cruzam o pie nem se sobrepõem — repare como as categorias menores, no
+  canto superior esquerdo, ficam legíveis e organizadas, ao contrário da
+  variante Basic ao lado onde elas se empilham umas sobre as outras), fatia
+  mínima para categorias zeradas, e texto central que encolhe sozinho
+  conforme o valor cresce.
 - **`CanalPieBasic`** — variante mais simples (sem hover, sem roteamento
   anti-colisão de rótulos), uma versão anterior mantida como referência.
 
