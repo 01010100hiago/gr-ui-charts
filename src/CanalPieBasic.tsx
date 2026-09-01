@@ -2,10 +2,10 @@
 // baixo (paredes escurecidas), topo glossy, raio externo maior no canal maior,
 // rótulos externos nome+valor com linha na cor da fatia. Sem interação de hover.
 //
-// Versão "v1" — congelada a partir do commit b7c3a1d do projeto GRautopecas
-// (dashboard "Receita por Canal"). Mantida como variante mais simples; para a
-// versão com hover, extrusão proporcional refinada e roteamento de rótulos
-// anti-colisão, use CanalPieDonut.
+// Versão "v1" — congelada a partir de uma iteração anterior do dashboard que
+// originou este pacote. Mantida como variante mais simples; para a versão com
+// hover, extrusão proporcional refinada e roteamento de rótulos anti-colisão,
+// use CanalPieDonut.
 
 export interface CanalPieDado {
   name: string;

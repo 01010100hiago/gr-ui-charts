@@ -1,19 +1,33 @@
 # gr-ui-charts
 
-Gráficos SVG customizados usados no dashboard GR AutoPeças/Pitstop — desenhados
-na mão porque libs de chart (Recharts, etc.) não suportam raio/altura variável
-por fatia num pie/donut.
+Gráficos SVG customizados, desenhados na mão em React — sem dependência de
+libs de chart (Recharts, etc.), porque nenhuma delas suporta raio/altura
+variável por fatia num pie/donut.
 
 ## Componentes
 
-- **`CanalPieDonut`** (também exportado como `CanalPie`) — versão atual em
-  produção. Donut 3D com raio e altura proporcionais ao valor de cada canal,
-  hover que levanta a fatia, rótulos externos roteados em leque (nunca cruzam
-  o pie nem se sobrepõem), fatia mínima para canais zerados, e texto central
-  que encolhe sozinho conforme o valor cresce.
-- **`CanalPieBasic`** — variante mais simples (sem hover), congelada a partir
-  do commit [`b7c3a1d`](https://github.com/01010100hiago/GRautopecas) do
-  projeto GRautopecas. Mantida como referência/fallback.
+<table>
+<tr>
+<td align="center" width="50%">
+<img src="docs/canal-pie-donut.svg" width="380" alt="CanalPieDonut" /><br/>
+<b>CanalPieDonut</b> (recomendado)
+</td>
+<td align="center" width="50%">
+<img src="docs/canal-pie-basic.svg" width="380" alt="CanalPieBasic" /><br/>
+<b>CanalPieBasic</b>
+</td>
+</tr>
+</table>
+
+- **`CanalPieDonut`** (também exportado como `CanalPie`) — versão atual,
+  recomendada. Donut 3D com raio e altura proporcionais ao valor de cada
+  fatia, hover que levanta a fatia, rótulos externos roteados em leque (nunca
+  cruzam o pie nem se sobrepõem — repare como "Categoria C" e "Categoria D"
+  não colidem, ao contrário da variante Basic ao lado), fatia mínima para
+  categorias zeradas, e texto central que encolhe sozinho conforme o valor
+  cresce.
+- **`CanalPieBasic`** — variante mais simples (sem hover, sem roteamento
+  anti-colisão de rótulos), uma versão anterior mantida como referência.
 
 ## Uso
 
@@ -21,8 +35,8 @@ por fatia num pie/donut.
 import { CanalPie, type CanalPieDado } from 'gr-ui-charts';
 
 const dados: CanalPieDado[] = [
-  { name: 'Oficina', value: 10566.55, color: 'var(--chart-purple)' },
-  { name: 'Balcão', value: 4649.85, color: 'var(--chart-cyan)' },
+  { name: 'Categoria A', value: 10566.55, color: 'var(--chart-purple)' },
+  { name: 'Categoria B', value: 4649.85, color: 'var(--chart-cyan)' },
 ];
 
 <CanalPie dados={dados} totalLabel="R$ 15,2k" />
@@ -48,9 +62,22 @@ const dados: CanalPieDado[] = [
 ## Instalação (dependência git, sem publicação no npm)
 
 ```bash
-npm install github:01010100hiago/gr-ui-charts
+npm install git+https://github.com/01010100hiago/gr-ui-charts.git
 ```
 
 Distribuído como TSX fonte puro (sem etapa de build) — o bundler do projeto
 consumidor (Vite/esbuild, Next, etc.) compila os arquivos deste pacote junto
 com os seus.
+
+### Usando em um build Docker (Alpine)
+
+`npm ci` precisa do binário `git` pra resolver dependências git, e o
+lockfile do npm normaliza URLs de repositórios do GitHub pra `git+ssh`
+mesmo quando você usa `https` no `package.json` — sem chave SSH no
+container, isso falha. Solução: instalar `git` e reescrever `ssh` → `https`
+no Dockerfile antes do `npm ci`:
+
+```dockerfile
+RUN apk add --no-cache git \
+  && git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+```

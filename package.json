@@ -1,7 +1,7 @@
 {
   "name": "gr-ui-charts",
   "version": "0.1.0",
-  "description": "Gráficos SVG customizados (sem dependência de libs de chart) usados no dashboard GR AutoPeças/Pitstop",
+  "description": "Gráficos SVG customizados (donut 3D) sem dependência de libs de chart",
   "type": "module",
   "main": "src/index.ts",
   "module": "src/index.ts",
